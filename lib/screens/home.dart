@@ -1,4 +1,5 @@
 import 'package:favorite_images/_widgets/layouts/custom_app_bar.dart';
+import 'package:favorite_images/screens/detailed_view.dart';
 import 'package:flutter/material.dart';
 import 'package:favorite_images/services/image_picker_service.dart';
 import "dart:io";
@@ -28,7 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          
             const Text("Your Photos, Your Story, All in One Place!",
                 style: TextStyle(fontSize: 18)),
             const SizedBox(
@@ -45,13 +45,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemCount: ImagePickerService
                     .gallery.length, // Assuming this returns the list directly
                 itemBuilder: (context, index) {
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.file(
-                      File(ImagePickerService.gallery[index]),
-                      fit: BoxFit.cover,
-                    ),
-                  ); // Adjust as needed
+                  return GestureDetector(
+                    onTap: () => {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DetailScreen(
+                                  imagePath: ImagePickerService.gallery[index],
+                                  index: index)))
+                    },
+                    child: Hero(
+                        tag: "image_$index",
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.file(
+                            File(ImagePickerService.gallery[index]),
+                            fit: BoxFit.cover,
+                          ),
+                        )),
+                  ); 
                 },
               ),
             ),
