@@ -35,37 +35,46 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 32,
             ),
             Expanded(
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3, // Number of columns
-                  childAspectRatio: 1, // Aspect ratio of each item
-                  crossAxisSpacing: 8, // Spacing between columns
-                  mainAxisSpacing: 8, // Spacing between rows
-                ),
-                itemCount: ImagePickerService
-                    .gallery.length, // Assuming this returns the list directly
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () => {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => DetailScreen(
-                                  imagePath: ImagePickerService.gallery[index],
-                                  index: index)))
-                    },
-                    child: Hero(
-                        tag: "image_$index",
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.file(
-                            File(ImagePickerService.gallery[index]),
-                            fit: BoxFit.cover,
-                          ),
-                        )),
-                  ); 
-                },
-              ),
+              child: ImagePickerService.gallery.isEmpty
+                  ? const Center(
+                      child: Text(
+                        "No photos yet! Tap the camera icon to take a picture or browse your library!",
+                        textAlign: TextAlign.center,
+                      ),
+                    )
+                  : GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3, // Number of columns
+                        childAspectRatio: 1, // Aspect ratio of each item
+                        crossAxisSpacing: 8, // Spacing between columns
+                        mainAxisSpacing: 8, // Spacing between rows
+                      ),
+                      itemCount: ImagePickerService.gallery
+                          .length, // Assuming this returns the list directly
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () => {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => DetailScreen(
+                                        imagePath:
+                                            ImagePickerService.gallery[index],
+                                        index: index)))
+                          },
+                          child: Hero(
+                              tag: "image_$index",
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.file(
+                                  File(ImagePickerService.gallery[index]),
+                                  fit: BoxFit.cover,
+                                ),
+                              )),
+                        );
+                      },
+                    ),
             ),
           ],
         ),
