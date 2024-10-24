@@ -1,51 +1,66 @@
-import 'package:favorite_images/services/image_picker_service.dart';
+import 'package:favorite_images/_widgets/layouts/custom_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:favorite_images/services/image_picker_service.dart';
+import "dart:io";
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  void refreshGallery() {
+    setState(() {
+      print("Refreshed");
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "GalleryGo",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-        ),
-        actions: [
-          IconButton(
-              onPressed: () => {ImagePickerService.getImageFromGallery()},
-              icon: const Icon(LucideIcons.imagePlus)),
-          IconButton(
-              onPressed: () => {ImagePickerService.getImageFromCamera()},
-              icon: const Icon(LucideIcons.camera)),
-        ],
+      appBar: CustomAppBar(
+        refresher: refreshGallery,
       ),
-      body: const Padding(
-        padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Your Photos, Your Story, All in One Place!",
+          
+            const Text("Your Photos, Your Story, All in One Place!",
                 style: TextStyle(fontSize: 18)),
-            SizedBox(
+            const SizedBox(
               height: 32,
             ),
             Expanded(
-                child: SizedBox(
-              height: double.infinity,
-              child: Center(
-                child: Text(
-                  'No photos yet! Tap the camera icon to take a picture or browse your library',
-                  textAlign: TextAlign.center,
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3, // Number of columns
+                  childAspectRatio: 1, // Aspect ratio of each item
+                  crossAxisSpacing: 8, // Spacing between columns
+                  mainAxisSpacing: 8, // Spacing between rows
                 ),
+                itemCount: ImagePickerService
+                    .gallery.length, // Assuming this returns the list directly
+                itemBuilder: (context, index) {
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.file(
+                      File(ImagePickerService.gallery[index]),
+                      fit: BoxFit.cover,
+                    ),
+                  ); // Adjust as needed
+                },
               ),
-            ))
+            ),
           ],
         ),
       ),
     );
   }
 }
+
+
 // child: ,
